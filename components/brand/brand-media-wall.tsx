@@ -173,7 +173,7 @@ export default function BrandMediaWall({ timeRange }: BrandMediaWallProps) {
       </div>
 
       {/* Media Grid/List */}
-      <div className={viewMode === "grid" ? "grid gap-4 md:grid-cols-2 lg:grid-cols-3" : "space-y-4"}>
+      <div className={viewMode === "grid" ? "grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "space-y-4"}>
         {filteredItems.map((item) => (
           <Card key={item.id} className={`hover:shadow-md transition-shadow ${viewMode === "list" ? "flex" : ""}`}>
             {item.mediaUrl && (

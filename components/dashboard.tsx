@@ -6,6 +6,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"
 import BrandDashboard from "@/components/brand-dashboard"
 import CompetitorDashboard from "@/components/competitor-dashboard"
 import TimeFilter from "@/components/time-filter"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function Dashboard() {
   const [timeRange, setTimeRange] = useState<"hour" | "day" | "week" | "month" | "year">("week")
@@ -72,23 +73,26 @@ export default function Dashboard() {
             </button>
             <h1 className="text-2xl font-bold text-gray-900">Social Listening Tracker</h1>
           </div>
-          <TimeFilter value={timeRange} onChange={setTimeRange} />
         </div>
       </header>
 
       {/* Main Content */}
       <main className="px-6 py-8">
         {/* Dynamic Page Heading with Icon */}
-        <div className="flex items-center gap-3 mb-6">
-          {activeTab === "brand" ? (
-            <Megaphone className="h-7 w-7 text-blue-600" />
-          ) : (
-            <Users className="h-7 w-7 text-green-600" />
-          )}
-          <h2 className="text-2xl font-semibold text-gray-800">
-            {activeTab === "brand" ? "Brand Analysis" : "Competitor Analysis"}
-          </h2>
-        </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <div className="flex items-center gap-3">
+    {activeTab === "brand" ? (
+      <Megaphone className="h-7 w-7 text-blue-600" />
+    ) : (
+      <Users className="h-7 w-7 text-green-600" />
+    )}
+    <h2 className="text-2xl font-semibold text-gray-800">
+      {activeTab === "brand" ? "Brand Analysis" : "Competitor Analysis"}
+    </h2>
+  </div>
+  <TimeFilter value={timeRange} onChange={setTimeRange} />
+</div>
+
 
         <Tabs value={activeTab} className="w-full">
           <TabsContent value="brand">

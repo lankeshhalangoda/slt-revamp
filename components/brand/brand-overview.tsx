@@ -1447,117 +1447,130 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
       </div>
 
       {/* Competitor Quick View */}
-      <ModernChartContainer title="Competitor Analysis" tooltip="Comprehensive competitive landscape overview">
-        <div className="space-y-8">
-          {/* Header with overall metrics */}
-          <div className="grid grid-cols-4 gap-4 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">4</div>
-              <div className="text-sm text-gray-600">Competitors</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">42.1%</div>
-              <div className="text-sm text-gray-600">Market Share</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">78%</div>
-              <div className="text-sm text-gray-600">Your Sentiment</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">#1</div>
-              <div className="text-sm text-gray-600">Market Position</div>
-            </div>
-          </div>
+      <ModernChartContainer title="Competitor Overview" tooltip="Comprehensive competitive landscape overview">
+  {(() => {
+    const totalCompetitors = competitorData.length - 1
+    const totalMentions = competitorData.reduce((sum, c) => sum + c.mentions, 0)
+    const yourBrand = competitorData.find(c => c.competitor === "Your Brand")
+    const marketShare = yourBrand ? ((yourBrand.mentions / totalMentions) * 100).toFixed(1) : "0.0"
+    const yourSentiment = yourBrand?.sentiment ?? 0
+    const sortedByShare = [...competitorData].sort((a, b) => b.mentions - a.mentions)
+    const yourPosition = sortedByShare.findIndex(c => c.competitor === "Your Brand") + 1
 
-          {/* Detailed competitor cards */}
-          <div className="grid gap-4">
-            {competitorData.map((competitor, index) => (
-              <div
-                key={competitor.competitor}
-                className={`p-6 rounded-lg border-2 transition-all duration-200 hover:shadow-lg ${
-                  competitor.competitor === "Your Brand"
-                    ? "bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200"
-                    : "bg-white border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
+    return (
+      <div className="space-y-8">
+        {/* Dynamic Summary Counts */}
+        <div className="grid grid-cols-4 gap-4 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-600">{totalCompetitors}</div>
+            <div className="text-sm text-gray-600">Competitors</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-600">{marketShare}%</div>
+            <div className="text-sm text-gray-600">Market Share</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-purple-600">{yourSentiment}%</div>
+            <div className="text-sm text-gray-600">Your Sentiment</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-orange-600">#{yourPosition}</div>
+            <div className="text-sm text-gray-600">Market Position</div>
+          </div>
+        </div>
+
+        {/* Competitor Cards */}
+        <div className="grid gap-4">
+          {competitorData.map((competitor, index) => (
+            <div
+              key={competitor.competitor}
+              className={`p-6 rounded-lg border-2 transition-all duration-200 hover:shadow-lg ${
+                competitor.competitor === "Your Brand"
+                  ? "bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200"
+                  : "bg-white border-gray-200 hover:border-gray-300"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold ${
+                      competitor.competitor === "Your Brand" ? "bg-blue-500" : "bg-gray-400"
+                    }`}
+                  >
+                    {competitor.competitor === "Your Brand" ? "YOU" : `C${index}`}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg text-gray-900">{competitor.competitor}</h3>
+                    <p className="text-sm text-gray-500">{competitor.mentions.toLocaleString()} mentions</p>
+                  </div>
+                </div>
+                {competitor.competitor === "Your Brand" && (
+                  <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Market Leader
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-3 gap-6">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">Share of Voice</span>
+                    <span className="text-sm font-bold text-gray-900">{competitor.shareOfVoice}%</span>
+                  </div>
+                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                     <div
-                      className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold ${
+                      className={`h-full transition-all duration-500 ${
                         competitor.competitor === "Your Brand" ? "bg-blue-500" : "bg-gray-400"
                       }`}
-                    >
-                      {competitor.competitor === "Your Brand" ? "YOU" : `C${index}`}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg text-gray-900">{competitor.competitor}</h3>
-                      <p className="text-sm text-gray-500">{competitor.mentions.toLocaleString()} mentions</p>
-                    </div>
+                      style={{ width: `${competitor.shareOfVoice}%` }}
+                    />
                   </div>
-                  {competitor.competitor === "Your Brand" && (
-                    <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                      Market Leader
-                    </div>
-                  )}
                 </div>
 
-                <div className="grid grid-cols-3 gap-6">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700">Share of Voice</span>
-                      <span className="text-sm font-bold text-gray-900">{competitor.shareOfVoice}%</span>
-                    </div>
-                    <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full transition-all duration-500 ${
-                          competitor.competitor === "Your Brand" ? "bg-blue-500" : "bg-gray-400"
-                        }`}
-                        style={{ width: `${competitor.shareOfVoice}%` }}
-                      />
-                    </div>
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">Sentiment Score</span>
+                    <span className="text-sm font-bold text-gray-900">{competitor.sentiment}%</span>
                   </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700">Sentiment Score</span>
-                      <span className="text-sm font-bold text-gray-900">{competitor.sentiment}%</span>
-                    </div>
-                    <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full transition-all duration-500 ${
-                          competitor.sentiment >= 75
-                            ? "bg-green-500"
-                            : competitor.sentiment >= 65
-                              ? "bg-yellow-500"
-                              : "bg-red-500"
-                        }`}
-                        style={{ width: `${competitor.sentiment}%` }}
-                      />
-                    </div>
+                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-500 ${
+                        competitor.sentiment >= 75
+                          ? "bg-green-500"
+                          : competitor.sentiment >= 65
+                            ? "bg-yellow-500"
+                            : "bg-red-500"
+                      }`}
+                      style={{ width: `${competitor.sentiment}%` }}
+                    />
                   </div>
+                </div>
 
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700">Engagement Rate</span>
-                      <span className="text-sm font-bold text-gray-900">
-                        {((competitor.engagement / competitor.mentions) * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                    <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full transition-all duration-500 ${
-                          competitor.competitor === "Your Brand" ? "bg-purple-500" : "bg-gray-400"
-                        }`}
-                        style={{ width: `${Math.min((competitor.engagement / competitor.mentions) * 100, 100)}%` }}
-                      />
-                    </div>
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">Engagement Rate</span>
+                    <span className="text-sm font-bold text-gray-900">
+                      {((competitor.engagement / competitor.mentions) * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-500 ${
+                        competitor.competitor === "Your Brand" ? "bg-purple-500" : "bg-gray-400"
+                      }`}
+                      style={{ width: `${Math.min((competitor.engagement / competitor.mentions) * 100, 100)}%` }}
+                    />
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
-      </ModernChartContainer>
+      </div>
+    )
+  })()}
+</ModernChartContainer>
+
     </div>
   )
 }
