@@ -1,7 +1,16 @@
 "use client"
 
 import { useState } from "react"
-import { MessageSquare, Users, Globe, Twitter, Facebook, Instagram, Youtube, Linkedin } from "lucide-react"
+import {
+  MessageSquare,
+  Users,
+  Globe,
+  Twitter,
+  Facebook,
+  Instagram,
+  Youtube,
+  Linkedin,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import SectionHeader from "@/components/section-header"
 import PlatformFeed from "@/components/platform-feed"
@@ -14,9 +23,10 @@ interface BrandFeedsInfluencersProps {
 
 export default function BrandFeedsInfluencers({ timeRange }: BrandFeedsInfluencersProps) {
   const [sentimentFilter, setSentimentFilter] = useState<"all" | "positive" | "negative" | "neutral">("all")
-  const [activeTab, setActiveTab] = useState("web")
+  const [activeTab, setActiveTab] = useState("all") // ✅ Start with "all" selected
 
   const platforms = [
+    { id: "all", name: "All", icon: <Globe className="h-4 w-4" /> }, // ✅ NEW platform
     { id: "web", name: "Web", icon: <Globe className="h-4 w-4" /> },
     { id: "twitter", name: "Twitter", icon: <Twitter className="h-4 w-4" /> },
     { id: "facebook", name: "Facebook", icon: <Facebook className="h-4 w-4" /> },
@@ -36,34 +46,16 @@ export default function BrandFeedsInfluencers({ timeRange }: BrandFeedsInfluence
 
       {/* Sentiment Filter */}
       <div className="flex gap-2">
-        <Button
-          variant={sentimentFilter === "all" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setSentimentFilter("all")}
-        >
-          All
-        </Button>
-        <Button
-          variant={sentimentFilter === "positive" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setSentimentFilter("positive")}
-        >
-          Positive
-        </Button>
-        <Button
-          variant={sentimentFilter === "negative" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setSentimentFilter("negative")}
-        >
-          Negative
-        </Button>
-        <Button
-          variant={sentimentFilter === "neutral" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setSentimentFilter("neutral")}
-        >
-          Neutral
-        </Button>
+        {["all", "positive", "negative", "neutral"].map((sentiment) => (
+          <Button
+            key={sentiment}
+            variant={sentimentFilter === sentiment ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSentimentFilter(sentiment as typeof sentimentFilter)}
+          >
+            {sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}
+          </Button>
+        ))}
       </div>
 
       {/* Platform Tabs */}
@@ -99,8 +91,8 @@ export default function BrandFeedsInfluencers({ timeRange }: BrandFeedsInfluence
         {/* Feed Section - Full Width */}
         <div>
           <SectionHeader
-            title={`${platforms.find((p) => p.id === activeTab)?.name} Feed`}
-            description={`Recent ${platforms.find((p) => p.id === activeTab)?.name} mentions with ${sentimentFilter} sentiment`}
+            title={`${platforms.find((p) => p.id === activeTab)?.name ?? "All"} Feed`}
+            description={`Recent ${platforms.find((p) => p.id === activeTab)?.name ?? "All"} mentions with ${sentimentFilter} sentiment`}
             icon={<MessageSquare className="h-4 w-4" />}
           />
           <PlatformFeed platform={activeTab} sentiment={sentimentFilter} type="brand" layout="grid" />
@@ -109,8 +101,8 @@ export default function BrandFeedsInfluencers({ timeRange }: BrandFeedsInfluence
         {/* Influencers Section - Full Width */}
         <div>
           <SectionHeader
-            title={`${platforms.find((p) => p.id === activeTab)?.name} Influencers`}
-            description={`Key influencers on ${platforms.find((p) => p.id === activeTab)?.name} with ${sentimentFilter} sentiment`}
+            title={`${platforms.find((p) => p.id === activeTab)?.name ?? "All"} Influencers`}
+            description={`Key influencers on ${platforms.find((p) => p.id === activeTab)?.name ?? "All"} with ${sentimentFilter} sentiment`}
             icon={<Users className="h-4 w-4" />}
           />
           <PlatformInfluencers platform={activeTab} sentiment={sentimentFilter} type="brand" />

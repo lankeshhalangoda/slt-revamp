@@ -3,13 +3,41 @@
 import { Clock } from "lucide-react"
 import SectionHeader from "@/components/section-header"
 import ModernChartContainer from "@/components/modern-chart-container"
-import { Scatter, ScatterChart, ResponsiveContainer, XAxis, YAxis, ZAxis, Tooltip } from "recharts"
+import { Area, AreaChart, Scatter, ScatterChart, ResponsiveContainer, XAxis, YAxis, ZAxis, Tooltip } from "recharts"
 
 interface BrandTimeAnalysisProps {
   timeRange: "hour" | "day" | "week" | "month" | "year"
 }
 
 export default function BrandTimeAnalysis({ timeRange }: BrandTimeAnalysisProps) {
+  // Mock data for timelines
+  const totalMentionsTimeline = [
+    { date: "Jan", mentions: 1850 },
+    { date: "Feb", mentions: 2100 },
+    { date: "Mar", mentions: 2450 },
+    { date: "Apr", mentions: 2200 },
+    { date: "May", mentions: 2800 },
+    { date: "Jun", mentions: 2650 },
+  ]
+
+  const totalEngagementTimeline = [
+    { date: "Jan", engagement: 15400 },
+    { date: "Feb", engagement: 17800 },
+    { date: "Mar", engagement: 21200 },
+    { date: "Apr", engagement: 19600 },
+    { date: "May", engagement: 24500 },
+    { date: "Jun", engagement: 23100 },
+  ]
+
+  const totalSocialReachTimeline = [
+    { date: "Jan", reach: 1800000 },
+    { date: "Feb", reach: 2100000 },
+    { date: "Mar", reach: 2450000 },
+    { date: "Apr", reach: 2200000 },
+    { date: "May", reach: 2800000 },
+    { date: "Jun", reach: 2650000 },
+  ]
+
   // Days of the week mapping
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
@@ -179,6 +207,34 @@ export default function BrandTimeAnalysis({ timeRange }: BrandTimeAnalysisProps)
 
       {/* First row - 2 charts */}
       <div className="grid gap-6 md:grid-cols-2">
+        <ModernChartContainer title="Total Mentions Timeline" tooltip="Overall mentions trend over time">
+          <ResponsiveContainer width="100%" height={280}>
+            <AreaChart data={totalMentionsTimeline} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 12, fill: "#6b7280" }}
+                axisLine={{ stroke: "#e5e7eb" }}
+                tickLine={{ stroke: "#e5e7eb" }}
+              />
+              <YAxis
+                tick={{ fontSize: 12, fill: "#6b7280" }}
+                axisLine={{ stroke: "#e5e7eb" }}
+                tickLine={{ stroke: "#e5e7eb" }}
+              />
+              <Tooltip contentStyle={customTooltipStyle} />
+              <Area
+                type="monotone"
+                dataKey="mentions"
+                stroke="#3B82F6"
+                fill="#3B82F6"
+                fillOpacity={0.2}
+                strokeWidth={3}
+                dot={{ fill: "#3B82F6", strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, stroke: "#3B82F6", strokeWidth: 2, fill: "white" }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </ModernChartContainer>
         <ModernChartContainer
           title="Mentions By Day & Hour"
           tooltip="Bubble size represents mention volume. Y-axis: Day of week, X-axis: Hour of day"
@@ -225,6 +281,39 @@ export default function BrandTimeAnalysis({ timeRange }: BrandTimeAnalysisProps)
           </ResponsiveContainer>
         </ModernChartContainer>
 
+
+      </div>
+
+      {/* Second row - 1 chart */}
+      <div className="grid gap-6 md:grid-cols-2">
+        <ModernChartContainer title="Total Engagement Timeline" tooltip="Overall engagement trend over time">
+          <ResponsiveContainer width="100%" height={280}>
+            <AreaChart data={totalEngagementTimeline} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 12, fill: "#6b7280" }}
+                axisLine={{ stroke: "#e5e7eb" }}
+                tickLine={{ stroke: "#e5e7eb" }}
+              />
+              <YAxis
+                tick={{ fontSize: 12, fill: "#6b7280" }}
+                axisLine={{ stroke: "#e5e7eb" }}
+                tickLine={{ stroke: "#e5e7eb" }}
+              />
+              <Tooltip contentStyle={customTooltipStyle} />
+              <Area
+                type="monotone"
+                dataKey="engagement"
+                stroke="#10B981"
+                fill="#10B981"
+                fillOpacity={0.2}
+                strokeWidth={3}
+                dot={{ fill: "#10B981", strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, stroke: "#10B981", strokeWidth: 2, fill: "white" }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </ModernChartContainer>
         <ModernChartContainer
           title="Engagement By Day & Hour"
           tooltip="Bubble size represents engagement volume. Y-axis: Day of week, X-axis: Hour of day"
@@ -270,10 +359,39 @@ export default function BrandTimeAnalysis({ timeRange }: BrandTimeAnalysisProps)
             </ScatterChart>
           </ResponsiveContainer>
         </ModernChartContainer>
-      </div>
 
-      {/* Second row - 1 chart */}
+
+      </div>
       <div className="grid gap-6 md:grid-cols-2">
+        <ModernChartContainer title="Total Social Reach Timeline" tooltip="Overall social reach trend over time">
+          <ResponsiveContainer width="100%" height={280}>
+            <AreaChart data={totalSocialReachTimeline} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 12, fill: "#6b7280" }}
+                axisLine={{ stroke: "#e5e7eb" }}
+                tickLine={{ stroke: "#e5e7eb" }}
+              />
+              <YAxis
+                tick={{ fontSize: 12, fill: "#6b7280" }}
+                axisLine={{ stroke: "#e5e7eb" }}
+                tickLine={{ stroke: "#e5e7eb" }}
+              />
+              <Tooltip contentStyle={customTooltipStyle} />
+              <Area
+                type="monotone"
+                dataKey="reach"
+                stroke="#C2185B"
+                fill="#E91E63"
+                fillOpacity={0.2}
+                strokeWidth={3}
+                dot={{ fill: "#E91E63", strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, stroke: "#C2185B", strokeWidth: 2, fill: "white" }}
+              />
+
+            </AreaChart>
+          </ResponsiveContainer>
+        </ModernChartContainer>
         <ModernChartContainer
           title="Social Reach By Day & Hour"
           tooltip="Bubble size represents reach volume. Y-axis: Day of week, X-axis: Hour of day"
@@ -319,9 +437,6 @@ export default function BrandTimeAnalysis({ timeRange }: BrandTimeAnalysisProps)
             </ScatterChart>
           </ResponsiveContainer>
         </ModernChartContainer>
-
-        {/* Empty space for symmetry */}
-        <div></div>
       </div>
     </div>
   )

@@ -1,13 +1,16 @@
 "use client"
 
 import { useState } from "react"
-import { Globe } from "lucide-react"
+import { Globe, Users, Smile } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import SectionHeader from "@/components/section-header"
 import ModernChartContainer from "@/components/modern-chart-container"
 import ChartLegend from "@/components/chart-legend"
 import WorldMap from "@/components/world-map"
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell, PieChart, Pie, LabelList } from "recharts"
+import {
+  Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell,
+  PieChart, Pie, LabelList
+} from "recharts"
 
 interface BrandGeographyChannelsProps {
   timeRange: "hour" | "day" | "week" | "month" | "year"
@@ -15,8 +18,10 @@ interface BrandGeographyChannelsProps {
 
 export default function BrandGeographyChannels({ timeRange }: BrandGeographyChannelsProps) {
   const [geographyChartType, setGeographyChartType] = useState<"bar" | "pie">("bar")
+  const [genderChartType, setGenderChartType] = useState<"bar" | "pie">("bar")
+  const [ageChartType, setAgeChartType] = useState<"bar" | "pie">("bar")
 
-  // Mock geographic data with proper coordinates
+  // Mock data
   const geographicData = [
     { country: "United States", mentions: 450, lat: 39.8283, lng: -98.5795 },
     { country: "United Kingdom", mentions: 280, lat: 55.3781, lng: -3.436 },
@@ -28,18 +33,31 @@ export default function BrandGeographyChannels({ timeRange }: BrandGeographyChan
     { country: "Brazil", mentions: 100, lat: -14.235, lng: -51.9253 },
   ]
 
-  // Convert geographic data for pie chart
-  const geographicPieData = geographicData.map((item, index) => ({
-    ...item,
-    fill: ["#017ABF", "#E91E63", "#4CAF50", "#FF9800", "#9C27B0", "#F44336", "#2196F3", "#795548"][index],
-  }))
+  const genderData = [
+    { gender: "Male", mentions: 540 },
+    { gender: "Female", mentions: 460 },
+    { gender: "Other", mentions: 80 },
+  ]
 
-  const geographyLegend = geographicPieData.slice(0, 5).map((item) => ({
-    color: item.fill,
-    label: item.country,
-  }))
+  const ageData = [
+    { ageGroup: "13-17", mentions: 150 },
+    { ageGroup: "18-24", mentions: 320 },
+    { ageGroup: "25-34", mentions: 400 },
+    { ageGroup: "35-44", mentions: 280 },
+    { ageGroup: "45-54", mentions: 190 },
+    { ageGroup: "55+", mentions: 140 },
+  ]
 
-  const customTooltipStyle = {
+  const chartColors = ["#017ABF", "#E91E63", "#4CAF50", "#FF9800", "#9C27B0", "#F44336", "#2196F3", "#795548"]
+
+  const addColor = <T extends object>(data: T[], key: keyof T = "mentions" as keyof T) =>
+    data.map((item, index) => ({ ...item, fill: chartColors[index % chartColors.length] }))
+
+  const geographicPieData = addColor(geographicData)
+  const genderPieData = addColor(genderData)
+  const agePieData = addColor(ageData)
+
+  const tooltipStyle = {
     backgroundColor: "white",
     border: "1px solid #e5e7eb",
     borderRadius: "8px",
@@ -49,91 +67,162 @@ export default function BrandGeographyChannels({ timeRange }: BrandGeographyChan
 
   return (
     <div className="space-y-8">
-      {/* Geography Section */}
-      <section>
-        <SectionHeader
-          title="Geographic Distribution"
-          description="Analyze mentions distribution across different regions"
-          icon={<Globe className="h-5 w-5" />}
-        />
+      <SectionHeader
+        title="Geographic Distribution"
+        description="Analyze mentions distribution across different regions"
+        icon={<Globe className="h-5 w-5" />}
+      />
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <ModernChartContainer
-            title="Global Mentions Map"
-            tooltip="Interactive world map showing mention density by country"
-          >
-            <WorldMap data={geographicData} />
-          </ModernChartContainer>
+      <div className="grid gap-6 md:grid-cols-2">
+        <ModernChartContainer
+          title="Global Mentions Map"
+          tooltip="Interactive world map showing mention density by country"
+        >
+          <WorldMap data={geographicData} />
+        </ModernChartContainer>
 
-          <ModernChartContainer
-            title="Top Countries by Mentions"
-            tooltip="Countries with highest mention volume"
-            legend={geographyChartType === "pie" ? <ChartLegend items={geographyLegend} /> : undefined}
-          >
-            <div className="space-y-4">
-              <div className="flex gap-2">
-                <Button
-                  variant={geographyChartType === "bar" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setGeographyChartType("bar")}
-                >
-                  Bar Chart
-                </Button>
-                <Button
-                  variant={geographyChartType === "pie" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setGeographyChartType("pie")}
-                >
-                  Pie Chart
-                </Button>
-              </div>
-              <ResponsiveContainer width="100%" height={320}>
-                {geographyChartType === "bar" ? (
-                  <BarChart data={geographicData} margin={{ left: 20, right: 20, top: 20, bottom: 60 }}>
-                    <XAxis
-                      dataKey="country"
-                      tick={{ fontSize: 10, fill: "#6b7280" }}
-                      angle={-45}
-                      textAnchor="end"
-                      height={80}
-                      interval={0}
-                    />
-                    <YAxis tick={{ fontSize: 12, fill: "#6b7280" }} />
-                    <Tooltip contentStyle={customTooltipStyle} />
-                    <Bar dataKey="mentions" fill="#017ABF" radius={[4, 4, 0, 0]}>
-                      <LabelList dataKey="mentions" position="top" fontSize={10} />
-                      {geographicData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={geographicPieData[index].fill} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                ) : (
-                  <PieChart>
-                    <Pie
-                      data={geographicPieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={120}
-                      paddingAngle={2}
-                      dataKey="mentions"
-                      stroke="white"
-                      strokeWidth={2}
-                      label={({ country, percent }) => `${country}: ${(percent * 100).toFixed(0)}%`}
-                      labelLine={false}
-                    >
-                      {geographicPieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                      ))}
-                    </Pie>
-                    <Tooltip contentStyle={customTooltipStyle} />
-                  </PieChart>
-                )}
-              </ResponsiveContainer>
+        <ModernChartContainer
+          title="Top Countries by Mentions"
+          tooltip="Countries with highest mention volume"
+          legend={geographyChartType === "pie" ? <ChartLegend items={geographicPieData.slice(0, 5).map(item => ({ color: item.fill, label: item.country }))} /> : undefined}
+        >
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <Button variant={geographyChartType === "bar" ? "default" : "outline"} size="sm" onClick={() => setGeographyChartType("bar")}>Bar Chart</Button>
+              <Button variant={geographyChartType === "pie" ? "default" : "outline"} size="sm" onClick={() => setGeographyChartType("pie")}>Pie Chart</Button>
             </div>
-          </ModernChartContainer>
-        </div>
-      </section>
+            <ResponsiveContainer width="100%" height={320}>
+              {geographyChartType === "bar" ? (
+                <BarChart data={geographicData} margin={{ left: 20, right: 20, top: 20, bottom: 60 }}>
+                  <XAxis dataKey="country" tick={{ fontSize: 10, fill: "#6b7280" }} angle={-45} textAnchor="end" height={80} interval={0} />
+                  <YAxis tick={{ fontSize: 12, fill: "#6b7280" }} />
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Bar dataKey="mentions" radius={[4, 4, 0, 0]}>
+                    <LabelList dataKey="mentions" position="top" fontSize={10} />
+                    {geographicData.map((_, index) => (
+                      <Cell key={index} fill={geographicPieData[index].fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              ) : (
+                <PieChart>
+                  <Pie
+                    data={geographicPieData}
+                    cx="50%" cy="50%" innerRadius={60} outerRadius={120}
+                    paddingAngle={2} dataKey="mentions"
+                    stroke="white" strokeWidth={2}
+                    label={({ country, percent }) => `${country}: ${(percent * 100).toFixed(0)}%`}
+                    labelLine={false}
+                  >
+                    {geographicPieData.map((entry, index) => (
+                      <Cell key={index} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={tooltipStyle} />
+                </PieChart>
+              )}
+            </ResponsiveContainer>
+          </div>
+        </ModernChartContainer>
+      </div>
+
+<SectionHeader
+  title="Demographic Breakdown"
+  description="Explore gender and age-based mention patterns"
+  icon={<Users className="h-5 w-5" />}
+/>
+
+<div className="grid gap-6 md:grid-cols-2">
+
+        <ModernChartContainer
+          title="Gender Distribution"
+          tooltip="Mentions breakdown by gender"
+          legend={genderChartType === "pie" ? <ChartLegend items={genderPieData.map(item => ({ color: item.fill, label: item.gender }))} /> : undefined}
+        >
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <Button variant={genderChartType === "bar" ? "default" : "outline"} size="sm" onClick={() => setGenderChartType("bar")}>Bar Chart</Button>
+              <Button variant={genderChartType === "pie" ? "default" : "outline"} size="sm" onClick={() => setGenderChartType("pie")}>Pie Chart</Button>
+            </div>
+            <ResponsiveContainer width="100%" height={320}>
+              {genderChartType === "bar" ? (
+                <BarChart data={genderData}>
+                  <XAxis dataKey="gender" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Bar dataKey="mentions" radius={[4, 4, 0, 0]}>
+                    <LabelList dataKey="mentions" position="top" fontSize={10} />
+                    {genderData.map((_, index) => (
+                      <Cell key={index} fill={genderPieData[index].fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              ) : (
+                <PieChart>
+                  <Pie
+                    data={genderPieData}
+                    cx="50%" cy="50%" innerRadius={60} outerRadius={120}
+                    paddingAngle={2} dataKey="mentions"
+                    stroke="white" strokeWidth={2}
+                    label={({ gender, percent }) => `${gender}: ${(percent * 100).toFixed(0)}%`}
+                    labelLine={false}
+                  >
+                    {genderPieData.map((entry, index) => (
+                      <Cell key={index} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={tooltipStyle} />
+                </PieChart>
+              )}
+            </ResponsiveContainer>
+          </div>
+        </ModernChartContainer>
+
+        {/* Age Group Chart */}
+        <ModernChartContainer
+          title="Age Group Distribution"
+          tooltip="Mentions breakdown by age group"
+          legend={ageChartType === "pie" ? <ChartLegend items={agePieData.map(item => ({ color: item.fill, label: item.ageGroup }))} /> : undefined}
+        >
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <Button variant={ageChartType === "bar" ? "default" : "outline"} size="sm" onClick={() => setAgeChartType("bar")}>Bar Chart</Button>
+              <Button variant={ageChartType === "pie" ? "default" : "outline"} size="sm" onClick={() => setAgeChartType("pie")}>Pie Chart</Button>
+            </div>
+            <ResponsiveContainer width="100%" height={320}>
+              {ageChartType === "bar" ? (
+                <BarChart data={ageData}>
+                  <XAxis dataKey="ageGroup" tick={{ fontSize: 10 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Bar dataKey="mentions" radius={[4, 4, 0, 0]}>
+                    <LabelList dataKey="mentions" position="top" fontSize={10} />
+                    {ageData.map((_, index) => (
+                      <Cell key={index} fill={agePieData[index].fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              ) : (
+                <PieChart>
+                  <Pie
+                    data={agePieData}
+                    cx="50%" cy="50%" innerRadius={60} outerRadius={120}
+                    paddingAngle={2} dataKey="mentions"
+                    stroke="white" strokeWidth={2}
+                    label={({ ageGroup, percent }) => `${ageGroup}: ${(percent * 100).toFixed(0)}%`}
+                    labelLine={false}
+                  >
+                    {agePieData.map((entry, index) => (
+                      <Cell key={index} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={tooltipStyle} />
+                </PieChart>
+              )}
+            </ResponsiveContainer>
+          </div>
+        </ModernChartContainer>
+      </div>
     </div>
   )
 }
