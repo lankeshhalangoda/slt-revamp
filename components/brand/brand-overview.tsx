@@ -44,7 +44,7 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
   const [engagementChannelChartType, setEngagementChannelChartType] = useState<"bar" | "pie">("pie")
   const [reachChannelChartType, setReachChannelChartType] = useState<"bar" | "pie">("pie")
   const [sentimentChartType, setSentimentChartType] = useState<"bar" | "pie">("pie")
-  const [emotionChartType, setEmotionChartType] = useState<"bar" | "pie">("pie")
+  const [emotionChartType, setEmotionChartType] = useState<"bar" | "pie">("bar")
   const [ageGroupChartType, setAgeGroupChartType] = useState<"bar" | "pie">("bar")
   const [genderChartType, setGenderChartType] = useState<"bar" | "pie">("pie")
   const [wordCloudFilter, setWordCloudFilter] = useState<"all" | "positive" | "negative" | "neutral">("all")
@@ -785,30 +785,6 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
 
       {/* Sentiment Trend & Top Sentiment */}
       <div className="grid gap-6 md:grid-cols-2">
-        <ModernChartContainer title="Sentiment Trend" tooltip="Daily sentiment analysis across all channels">
-          <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={sentimentTrendData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                tickLine={{ stroke: "#e5e7eb" }}
-              />
-              <YAxis
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                tickLine={{ stroke: "#e5e7eb" }}
-              />
-              <Tooltip contentStyle={customTooltipStyle} />
-              <Area type="monotone" dataKey="positive" stackId="1" stroke="#10B981" fill="#10B981" fillOpacity={0.8} />
-              <Area type="monotone" dataKey="neutral" stackId="1" stroke="#F59E0B" fill="#F59E0B" fillOpacity={0.8} />
-              <Area type="monotone" dataKey="negative" stackId="1" stroke="#EF4444" fill="#EF4444" fillOpacity={0.8} />
-            </AreaChart>
-          </ResponsiveContainer>
-          <div className="flex justify-center mt-4">
-            <ChartLegend items={sentimentLegend} />
-          </div>
-        </ModernChartContainer>
 
         <ModernChartContainer title="Top Sentiment" tooltip="Overall sentiment distribution">
           <div className="space-y-4">
@@ -874,6 +850,49 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
             <ChartLegend items={sentimentLegend} />
           </div>
         </ModernChartContainer>
+
+        <ModernChartContainer
+          title="Word Cloud Analysis"
+          tooltip="Most frequently mentioned words and phrases with sentiment filtering"
+        >
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <Button
+                variant={wordCloudFilter === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setWordCloudFilter("all")}
+                className={wordCloudFilter === "all" ? buttonClass : ""}
+              >
+                All Words
+              </Button>
+              <Button
+                variant={wordCloudFilter === "positive" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setWordCloudFilter("positive")}
+                className={wordCloudFilter === "positive" ? buttonClass : ""}
+              >
+                Positive Words
+              </Button>
+              <Button
+                variant={wordCloudFilter === "negative" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setWordCloudFilter("negative")}
+                className={wordCloudFilter === "negative" ? buttonClass : ""}
+              >
+                Negative Words
+              </Button>
+              <Button
+                variant={wordCloudFilter === "neutral" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setWordCloudFilter("neutral")}
+                className={wordCloudFilter === "neutral" ? buttonClass : ""}
+              >
+                Neutral Words
+              </Button>
+            </div>
+            <WordCloudComponent filter={wordCloudFilter} type="brand" />
+          </div>
+        </ModernChartContainer>
       </div>
 
       {/* Emotion Analysis */}
@@ -881,39 +900,6 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
 
       {/* Emotion Trend & Top Emotion */}
       <div className="grid gap-6 md:grid-cols-2">
-        <ModernChartContainer title="Emotion Trend" tooltip="Daily emotion analysis across all channels">
-          <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={emotionTrendData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                tickLine={{ stroke: "#e5e7eb" }}
-              />
-              <YAxis
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                tickLine={{ stroke: "#e5e7eb" }}
-              />
-              <Tooltip contentStyle={customTooltipStyle} />
-              <Area type="monotone" dataKey="joy" stackId="1" stroke="#10B981" fill="#10B981" fillOpacity={0.8} />
-              <Area type="monotone" dataKey="trust" stackId="1" stroke="#34D399" fill="#34D399" fillOpacity={0.8} />
-              <Area
-                type="monotone"
-                dataKey="anticipation"
-                stackId="1"
-                stroke="#6EE7B7"
-                fill="#6EE7B7"
-                fillOpacity={0.8}
-              />
-              <Area type="monotone" dataKey="surprise" stackId="1" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.8} />
-              <Area type="monotone" dataKey="fear" stackId="1" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.8} />
-            </AreaChart>
-          </ResponsiveContainer>
-          <div className="flex justify-center mt-4">
-            <ChartLegend items={emotionLegend} />
-          </div>
-        </ModernChartContainer>
 
         <ModernChartContainer title="Top Emotion" tooltip="Emotion distribution analysis">
           <div className="space-y-4">
@@ -985,36 +971,6 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
             <ChartLegend items={emotionLegend} />
           </div>
         </ModernChartContainer>
-      </div>
-
-      {/* Gender Analysis */}
-      <SectionHeader title="Gender Analysis" description="" icon={<Users className="h-5 w-5" />} />
-
-      {/* Gender Trend & Top Gender */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <ModernChartContainer title="Gender Trend" tooltip="Daily gender breakdown across all channels">
-          <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={genderTrendData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                tickLine={{ stroke: "#e5e7eb" }}
-              />
-              <YAxis
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                tickLine={{ stroke: "#e5e7eb" }}
-              />
-              <Tooltip contentStyle={customTooltipStyle} />
-              <Area type="monotone" dataKey="Female" stackId="1" stroke="#E91E63" fill="#E91E63" fillOpacity={0.8} />
-              <Area type="monotone" dataKey="Male" stackId="1" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.8} />
-            </AreaChart>
-          </ResponsiveContainer>
-          <div className="flex justify-center mt-4">
-            <ChartLegend items={genderLegend} />
-          </div>
-        </ModernChartContainer>
 
         <ModernChartContainer title="Top Gender" tooltip="Gender distribution">
           <div className="space-y-4">
@@ -1075,101 +1031,6 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
           </div>
           <div className="flex justify-center mt-4">
             <ChartLegend items={genderLegend} />
-          </div>
-        </ModernChartContainer>
-      </div>
-
-      {/* Age Analysis */}
-      <SectionHeader title="Age Analysis" description="" icon={<Users className="h-5 w-5" />} />
-
-      {/* Age Group Trend & Top Age Group */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <ModernChartContainer title="Age Group Trend" tooltip="Daily age group breakdown across all channels">
-          <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={ageGroupTrendData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                tickLine={{ stroke: "#e5e7eb" }}
-              />
-              <YAxis
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                tickLine={{ stroke: "#e5e7eb" }}
-              />
-              <Tooltip contentStyle={customTooltipStyle} />
-              <Area type="monotone" dataKey="25-34" stackId="1" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.8} />
-              <Area type="monotone" dataKey="18-24" stackId="1" stroke="#10B981" fill="#10B981" fillOpacity={0.8} />
-              <Area type="monotone" dataKey="35-44" stackId="1" stroke="#F59E0B" fill="#F59E0B" fillOpacity={0.8} />
-              <Area type="monotone" dataKey="45-54" stackId="1" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.8} />
-              <Area type="monotone" dataKey="55+" stroke="#EF4444" fill="#EF4444" fillOpacity={0.8} />
-            </AreaChart>
-          </ResponsiveContainer>
-          <div className="flex justify-center mt-4">
-            <ChartLegend items={ageGroupLegend} />
-          </div>
-        </ModernChartContainer>
-
-        <ModernChartContainer title="Top Age Group" tooltip="Age group distribution">
-          <div className="space-y-4">
-            <div className="flex gap-2">
-              <Button
-                variant={ageGroupChartType === "bar" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setAgeGroupChartType("bar")}
-                className={ageGroupChartType === "bar" ? buttonClass : ""}
-              >
-                Bar Chart
-              </Button>
-              <Button
-                variant={ageGroupChartType === "pie" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setAgeGroupChartType("pie")}
-                className={ageGroupChartType === "pie" ? buttonClass : ""}
-              >
-                Pie Chart
-              </Button>
-            </div>
-            <ResponsiveContainer width="100%" height={240}>
-              {ageGroupChartType === "bar" ? (
-                <BarChart data={topAgeGroupData} margin={{ bottom: 40 }}>
-                  <XAxis dataKey="ageGroup" tick={{ fontSize: 11 }} />
-                  <YAxis tick={{ fontSize: 12, fill: "#6b7280" }} />
-                  <Tooltip contentStyle={customTooltipStyle} />
-                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                    <LabelList dataKey="value" position="top" fontSize={10} />
-                    {topAgeGroupData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              ) : (
-                <PieChart>
-                  <Pie
-                    data={topAgeGroupData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={120}
-                    paddingAngle={2}
-                    dataKey="value"
-                    stroke="white"
-                    strokeWidth={2}
-                    label={({ ageGroup, percent }) => `${ageGroup}: ${(percent * 100).toFixed(0)}%`}
-                    labelLine={false}
-                  >
-                    {topAgeGroupData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={customTooltipStyle} />
-                </PieChart>
-              )}
-            </ResponsiveContainer>
-          </div>
-          <div className="flex justify-center mt-4">
-            <ChartLegend items={ageGroupLegend} />
           </div>
         </ModernChartContainer>
       </div>
@@ -1300,49 +1161,7 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
       </div>
 
       {/* Word Cloud & Topic Insights */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <ModernChartContainer
-          title="Word Cloud Analysis"
-          tooltip="Most frequently mentioned words and phrases with sentiment filtering"
-        >
-          <div className="space-y-4">
-            <div className="flex gap-2">
-              <Button
-                variant={wordCloudFilter === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setWordCloudFilter("all")}
-                className={wordCloudFilter === "all" ? buttonClass : ""}
-              >
-                All Words
-              </Button>
-              <Button
-                variant={wordCloudFilter === "positive" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setWordCloudFilter("positive")}
-                className={wordCloudFilter === "positive" ? buttonClass : ""}
-              >
-                Positive Words
-              </Button>
-              <Button
-                variant={wordCloudFilter === "negative" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setWordCloudFilter("negative")}
-                className={wordCloudFilter === "negative" ? buttonClass : ""}
-              >
-                Negative Words
-              </Button>
-              <Button
-                variant={wordCloudFilter === "neutral" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setWordCloudFilter("neutral")}
-                className={wordCloudFilter === "neutral" ? buttonClass : ""}
-              >
-                Neutral Words
-              </Button>
-            </div>
-            <WordCloudComponent filter={wordCloudFilter} type="brand" />
-          </div>
-        </ModernChartContainer>
+      <div className="grid gap-6 md:grid-cols-1">
 
         <ModernChartContainer title="Sentiment by Topic Category" tooltip="Analyze key topics and sentiment patterns">
           <div className="space-y-4">
@@ -1367,35 +1186,34 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
             <ResponsiveContainer width="100%" height={320}>
               {topicChartType === "bar" ? (
                 <BarChart
-                  data={topicInsightsData}
-                  layout="vertical"
-                  margin={{ left: 100, right: 40, top: 20, bottom: 20 }}
-                >
-                  <XAxis
-                    type="number"
-                    tick={{ fontSize: 12, fill: "#6b7280" }}
-                    axisLine={{ stroke: "#e5e7eb" }}
-                    tickLine={{ stroke: "#e5e7eb" }}
-                  />
-                  <YAxis
-                    type="category"
-                    dataKey="topic"
-                    width={100}
-                    tick={{ fontSize: 11, fill: "#6b7280" }}
-                    axisLine={{ stroke: "#e5e7eb" }}
-                    tickLine={{ stroke: "#e5e7eb" }}
-                  />
-                  <Tooltip
-                    contentStyle={customTooltipStyle}
-                    formatter={(value, name) => [
-                      value,
-                      name === "positive" ? "Positive" : name === "neutral" ? "Neutral" : "Negative",
-                    ]}
-                  />
-                  <Bar dataKey="positive" stackId="a" fill="#10B981" radius={[0, 0, 0, 0]} />
-                  <Bar dataKey="neutral" stackId="a" fill="#F59E0B" radius={[0, 0, 0, 0]} />
-                  <Bar dataKey="negative" stackId="a" fill="#EF4444" radius={[0, 4, 4, 0]} />
-                </BarChart>
+  data={topicInsightsData}
+  margin={{ left: 20, right: 20, top: 20, bottom: 60 }}
+>
+  <XAxis
+    dataKey="topic"
+    tick={{ fontSize: 10, fill: "#6b7280" }}
+    angle={-45}
+    textAnchor="end"
+    interval={0}
+  />
+  <YAxis
+    type="number"
+    tick={{ fontSize: 12, fill: "#6b7280" }}
+    axisLine={{ stroke: "#e5e7eb" }}
+    tickLine={{ stroke: "#e5e7eb" }}
+  />
+  <Tooltip
+    contentStyle={customTooltipStyle}
+    formatter={(value, name) => [
+      value,
+      name === "positive" ? "Positive" : name === "neutral" ? "Neutral" : "Negative",
+    ]}
+  />
+  <Bar dataKey="positive" stackId="a" fill="#10B981" radius={[4, 4, 0, 0]} />
+  <Bar dataKey="neutral" stackId="a" fill="#F59E0B" radius={[4, 4, 0, 0]} />
+  <Bar dataKey="negative" stackId="a" fill="#EF4444" radius={[4, 4, 0, 0]} />
+</BarChart>
+
               ) : (
                 <div className="grid grid-cols-1 gap-4">
                   {topicInsightsData.map((item, index) => (
