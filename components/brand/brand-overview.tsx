@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Activity, Heart, Eye, MessageCircle, Users, TrendingUp, Brain } from "lucide-react"
+import { Globe, Activity, Heart, Eye, MessageCircle, Users, TrendingUp, Brain } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import SectionHeader from "@/components/section-header"
 import ModernChartContainer from "@/components/modern-chart-container"
@@ -781,7 +781,7 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
       </div>
 
       {/* Sentiment Analysis */}
-      <SectionHeader title="Sentiment Analysis" description="" icon={<Brain className="h-5 w-5" />} />
+      <SectionHeader title="Sentiment & Emotion Analytics" description="" icon={<Brain className="h-5 w-5" />} />
 
       {/* Sentiment Trend & Top Sentiment */}
       <div className="grid gap-6 md:grid-cols-2">
@@ -850,56 +850,6 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
             <ChartLegend items={sentimentLegend} />
           </div>
         </ModernChartContainer>
-
-        <ModernChartContainer
-          title="Word Cloud Analysis"
-          tooltip="Most frequently mentioned words and phrases with sentiment filtering"
-        >
-          <div className="space-y-4">
-            <div className="flex gap-2">
-              <Button
-                variant={wordCloudFilter === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setWordCloudFilter("all")}
-                className={wordCloudFilter === "all" ? buttonClass : ""}
-              >
-                All Words
-              </Button>
-              <Button
-                variant={wordCloudFilter === "positive" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setWordCloudFilter("positive")}
-                className={wordCloudFilter === "positive" ? buttonClass : ""}
-              >
-                Positive Words
-              </Button>
-              <Button
-                variant={wordCloudFilter === "negative" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setWordCloudFilter("negative")}
-                className={wordCloudFilter === "negative" ? buttonClass : ""}
-              >
-                Negative Words
-              </Button>
-              <Button
-                variant={wordCloudFilter === "neutral" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setWordCloudFilter("neutral")}
-                className={wordCloudFilter === "neutral" ? buttonClass : ""}
-              >
-                Neutral Words
-              </Button>
-            </div>
-            <WordCloudComponent filter={wordCloudFilter} type="brand" />
-          </div>
-        </ModernChartContainer>
-      </div>
-
-      {/* Emotion Analysis */}
-      <SectionHeader title="Emotion Analysis" description="" icon={<Heart className="h-5 w-5" />} />
-
-      {/* Emotion Trend & Top Emotion */}
-      <div className="grid gap-6 md:grid-cols-2">
 
         <ModernChartContainer title="Top Emotion" tooltip="Emotion distribution analysis">
           <div className="space-y-4">
@@ -972,6 +922,59 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
           </div>
         </ModernChartContainer>
 
+      </div>
+      {/* Emotion Trend & Top Emotion */}
+      <div className="grid gap-6 md:grid-cols-1">
+
+                <ModernChartContainer
+          title="Word Cloud Analysis"
+          tooltip="Most frequently mentioned words and phrases with sentiment filtering"
+        >
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <Button
+                variant={wordCloudFilter === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setWordCloudFilter("all")}
+                className={wordCloudFilter === "all" ? buttonClass : ""}
+              >
+                All Words
+              </Button>
+              <Button
+                variant={wordCloudFilter === "positive" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setWordCloudFilter("positive")}
+                className={wordCloudFilter === "positive" ? buttonClass : ""}
+              >
+                Positive Words
+              </Button>
+              <Button
+                variant={wordCloudFilter === "negative" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setWordCloudFilter("negative")}
+                className={wordCloudFilter === "negative" ? buttonClass : ""}
+              >
+                Negative Words
+              </Button>
+              <Button
+                variant={wordCloudFilter === "neutral" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setWordCloudFilter("neutral")}
+                className={wordCloudFilter === "neutral" ? buttonClass : ""}
+              >
+                Neutral Words
+              </Button>
+            </div>
+            <WordCloudComponent filter={wordCloudFilter} type="brand" />
+          </div>
+        </ModernChartContainer>
+
+        </div>
+              {/* Emotion Analysis */}
+      <SectionHeader title="Demographic Analytics" description="" icon={<Globe className="h-5 w-5" />} />
+
+        <div className="grid gap-6 md:grid-cols-2">
+
         <ModernChartContainer title="Top Gender" tooltip="Gender distribution">
           <div className="space-y-4">
             <div className="flex gap-2">
@@ -1033,54 +1036,69 @@ export default function BrandOverviewPage({ timeRange }: BrandOverviewPageProps)
             <ChartLegend items={genderLegend} />
           </div>
         </ModernChartContainer>
-      </div>
 
-      {/* Metrics by Time of Day - Interactive Bubble Chart */}
-      <ModernChartContainer
-        title="Metrics by Time of Day"
-        tooltip="Interactive bubble chart showing brand performance throughout the day (Mentions/Engagement/Social Reach/Sentiments)"
-      >
-        <ResponsiveContainer width="100%" height={350}>
-          <ScatterChart data={timeOfDayData} margin={{ top: 20, right: 30, left: 80, bottom: 20 }}>
-            <XAxis
-              type="number"
-              dataKey="hour"
-              domain={[8, 20]}
-              tickCount={7}
-              tickFormatter={(value) => `${value}:00`}
-              tick={{ fontSize: 11, fill: "#6b7280" }}
-              axisLine={{ stroke: "#e5e7eb", strokeWidth: 1 }}
-              tickLine={{ stroke: "#e5e7eb" }}
-              label={{
-                value: "Hour of Day",
-                position: "bottom",
-                offset: -5,
-                style: { textAnchor: "middle", fontSize: "12px", fill: "#6b7280" },
-              }}
-            />
-            <YAxis
-              type="number"
-              dataKey="day"
-              domain={[0, 2]}
-              tickCount={3}
-              tickFormatter={(value) => daysOfWeek[value] || ""}
-              tick={{ fontSize: 11, fill: "#6b7280" }}
-              axisLine={{ stroke: "#e5e7eb", strokeWidth: 1 }}
-              tickLine={{ stroke: "#e5e7eb" }}
-              width={70}
-              label={{
-                value: "Day of Week",
-                angle: -90,
-                position: "insideLeft",
-                style: { textAnchor: "middle", fontSize: "12px", fill: "#6b7280" },
-              }}
-            />
-            <ZAxis type="number" dataKey="mentions" range={[100, 800]} />
-            <Tooltip content={<BubbleTooltip />} />
-            <Scatter dataKey="mentions" fill="#017ABF" fillOpacity={0.8} stroke="#0056b3" strokeWidth={2} />
-          </ScatterChart>
-        </ResponsiveContainer>
-      </ModernChartContainer>
+        <ModernChartContainer title="Top Age Group" tooltip="Age group distribution">
+                  <div className="space-y-4">
+                    <div className="flex gap-2">
+                      <Button
+                        variant={ageGroupChartType === "bar" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setAgeGroupChartType("bar")}
+                        className={ageGroupChartType === "bar" ? buttonClass : ""}
+                      >
+                        Bar Chart
+                      </Button>
+                      <Button
+                        variant={ageGroupChartType === "pie" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setAgeGroupChartType("pie")}
+                        className={ageGroupChartType === "pie" ? buttonClass : ""}
+                      >
+                        Pie Chart
+                      </Button>
+                    </div>
+                    <ResponsiveContainer width="100%" height={240}>
+                      {ageGroupChartType === "bar" ? (
+                        <BarChart data={topAgeGroupData} margin={{ bottom: 40 }}>
+                          <XAxis dataKey="ageGroup" tick={{ fontSize: 11 }} />
+                          <YAxis tick={{ fontSize: 12, fill: "#6b7280" }} />
+                          <Tooltip contentStyle={customTooltipStyle} />
+                          <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                            <LabelList dataKey="value" position="top" fontSize={10} />
+                            {topAgeGroupData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.fill} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      ) : (
+                        <PieChart>
+                          <Pie
+                            data={topAgeGroupData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={120}
+                            paddingAngle={2}
+                            dataKey="value"
+                            stroke="white"
+                            strokeWidth={2}
+                            label={({ ageGroup, percent }) => `${ageGroup}: ${(percent * 100).toFixed(0)}%`}
+                            labelLine={false}
+                          >
+                            {topAgeGroupData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.fill} />
+                            ))}
+                          </Pie>
+                          <Tooltip contentStyle={customTooltipStyle} />
+                        </PieChart>
+                      )}
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex justify-center mt-4">
+                    <ChartLegend items={ageGroupLegend} />
+                  </div>
+                </ModernChartContainer>
+      </div>
 
       {/* Brand Analytics */}
       <SectionHeader title="Topic Analytics" description="" icon={<Activity className="h-5 w-5" />} />
